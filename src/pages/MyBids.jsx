@@ -13,7 +13,7 @@ const MyBids = () => {
 
   
   const getData = async () => {
-    const { data } = await axios(`http://localhost:5000/mybids/${user?.email}`);
+    const { data } = await axios(`${import.meta.env.VITE_API_URL}/mybids/${user?.email}`);
     setBid(data);
   };
   // console.log(bids);

@@ -6,9 +6,11 @@ import toast from "react-hot-toast";
 import { useContext, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 const AddJob = () => {
     const navigate = useNavigate();
-    const {user} = useContext(AuthContext);
+    // const {user} = useContext(AuthContext);
+    const {user} = useAuth();
     const buyer_email = user?.email;
   const [startDate, setStartDate] = useState(new Date());
 
