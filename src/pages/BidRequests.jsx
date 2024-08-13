@@ -17,12 +17,12 @@ const BidRequests = () => {
   const {
     data: bids = [],
     isLoading,
-    // refetch,
+    refetch,
     // isError,
     // error,
   } = useQuery({
     queryFn: () => getData(),
-    queryKey: ["bids"],
+    queryKey: ["bids",user?.email],
   });
 
   // const { job_title , deadline,comment} = bids;
@@ -34,14 +34,23 @@ const BidRequests = () => {
     const { data } = await axiosSecure(`/bid-request/${user?.email}`);
     return data;
   };
+
+ const {mutateAsync} = useMutation({
+    mutationFn: async ({id,status})=>{
+    const { data } = await axiosSecure.patch(`/bidupdate/${id}`, { status })
+    console.log(data)
+
+    },
+    onSuccess:()=>{
+      // console.log("patch update message from tanstack onSuccess"),
+      refetch()
+    }
+  })
   console.log(bids,"bids")
   console.log(bids.length);
 
   const handleProgress = async (id, prevStatus, status) => {
-    const { data } = await axiosSecure.patch(`/bidupdate/${id}`, { status });
-    console.log(data);
-    getData();
-    console.log(id, prevStatus, status);
+    await mutateAsync({id,status})
   };
 
   if(isLoading) {

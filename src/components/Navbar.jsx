@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="flex-1">
         <div className="flex gap-2 items-center">
           <img className="w-auto h-7" src="" alt="" />
-          <span className="font-bold">SoloSphere</span>
+          <Link to="http://localhost:5173/" className="font-bold">SoloSphere</Link>
         </div>
       </div>
       <div className="flex-none">

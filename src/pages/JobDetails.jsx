@@ -68,9 +68,10 @@ const JobDetails = () => {
       }
     } catch (err) {
       console.log(err.msg);
-      if (err) {
-        toast.error(err.message);
-      }
+      toast.error(err.response.data)
+      // if (err) {
+      //   toast.error(err.message);
+      // }
     }
     // console.table(bidData)
   };
