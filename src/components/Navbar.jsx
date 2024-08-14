@@ -30,6 +30,9 @@ const Navbar = () => {
           <li>
             <div>Home</div>
           </li>
+          <li>
+            <Link to="/alljobs">All Jobs</Link>
+          </li>
 
           {/* if user not found then show login button */}
           {!user && (
