@@ -7,12 +7,13 @@ const AllJobs = () => {
   const [count, setCount] = useState(0);
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter,setFilter] = useState("");
 
 
 
   useEffect(() => {
     const getData = async () => {
-      const { data } = await axios(`http://localhost:5000/all-jobs/?page=${currentPage}&size=${itemsPerPage}`);
+      const { data } = await axios(`http://localhost:5000/all-jobs/?page=${currentPage}&size=${itemsPerPage}&filter=${filter}`);
       //  console.log(data)
       //  setJobs(Array.isArray(data) ? data : []);
       setJobs(data);
@@ -20,7 +21,7 @@ const AllJobs = () => {
       
     };
     getData();
-  }, [currentPage,itemsPerPage]);
+  }, [currentPage,itemsPerPage,filter]);
 
   useEffect(() => {
     const getCount = async () => {
@@ -43,6 +44,9 @@ const AllJobs = () => {
     (element) => element + 1
   );
 
+  const numOfPages = pages.length;
+  // console.log(typeof(numOfPages))
+
   const handleButtonNum = (btnNum)=>{
     setCurrentPage(btnNum)
     console.log(btnNum);
@@ -55,6 +59,8 @@ const AllJobs = () => {
         <div className="flex flex-col md:flex-row justify-center items-center gap-5 ">
           <div>
             <select
+            onChange={e=>setFilter(e.target.value)}
+            value={filter}
               name="category"
               id="category"
               className="border p-4 rounded-lg"
@@ -102,7 +108,9 @@ const AllJobs = () => {
       </div>
 
       <div className="flex justify-center mt-12">
-        <button className="px-4 py-2 mx-1 text-gray-700 disabled:text-gray-500 capitalize bg-gray-200 rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white">
+        <button disabled={currentPage==1}
+        onClick={()=>handleButtonNum(currentPage-1)}
+        className="px-4 py-2 mx-1 text-gray-700 disabled:text-gray-500 capitalize bg-gray-200 rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white">
           <div className="flex items-center -mx-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -126,13 +134,15 @@ const AllJobs = () => {
         {pages.map((btnNum) => (
           <button onClick={()=>handleButtonNum(btnNum)}
             key={btnNum}
-            className={`hidden px-4 py-2 mx-1 transition-colors duration-300 transform  rounded-md sm:inline hover:bg-blue-500  hover:text-white`}
+            className={` ${currentPage == btnNum? 'bg-[#384152] text-white':''} hidden px-4 py-2 mx-1 transition-colors duration-300 transform  rounded-md sm:inline hover:bg-[#384152]  hover:text-white`}
           >
             {btnNum}
           </button>
         ))}
 
-        <button className="px-4 py-2 mx-1 text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500">
+        <button disabled={currentPage==numOfPages}
+        onClick={()=>handleButtonNum(currentPage+1)}
+        className="px-4 py-2 mx-1 text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500">
           <div className="flex items-center -mx-1">
             <span className="mx-1">Next</span>
 
