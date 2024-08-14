@@ -3,40 +3,46 @@ import JobCard from "../components/JobCard";
 import axios from "axios";
 
 const AllJobs = () => {
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter,setFilter] = useState("");
+  const [filter,setFilter] = useState('');
+  const [sort, setSort]= useState("");
+  console.log(sort)
 
 
 
   useEffect(() => {
     const getData = async () => {
-      const { data } = await axios(`http://localhost:5000/all-jobs/?page=${currentPage}&size=${itemsPerPage}&filter=${filter}`);
+      const { data } = await axios(`http://localhost:5000/all-jobs/?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}`);
       //  console.log(data)
       //  setJobs(Array.isArray(data) ? data : []);
       setJobs(data);
       // console.log(data.length,"18");
+      setCount(data.length)
       
     };
     getData();
-  }, [currentPage,itemsPerPage,filter]);
+  }, [currentPage,itemsPerPage,filter,sort]);
 
   useEffect(() => {
     const getCount = async () => {
-      const { data } = await axios("http://localhost:5000/jobs-count");
+      const { data } = await axios(`http://localhost:5000/jobs-count/?filter=${filter}`);
       //  console.log(data)
       //  setJobs(Array.isArray(data) ? data : []);
       // setJobs(data);
       // console.log(data.length);
       // console.log(data.count, "data length 31");
-      setCount(data.count);
+      console.log(data.count,"36");
+      setCount(data.count)
+      console.log(count)
+      // console.log(typeof(count))
       // console.log(count, "count");
       // console.log(count, "count");
     };
     getCount();
-  }, []);
+  }, [filter]);
   // const Array = []
   // const pages = [1,2,3,4,5]
   // const pages = [...Array(Math.ceil(count/itemsPerPage)).keys()].map(element=>element+1);
@@ -44,12 +50,17 @@ const AllJobs = () => {
     (element) => element + 1
   );
 
+  const handleReset = ()=>{
+    setSort("");
+    setFilter("");
+  }
+
   const numOfPages = pages.length;
   // console.log(typeof(numOfPages))
 
   const handleButtonNum = (btnNum)=>{
     setCurrentPage(btnNum)
-    console.log(btnNum);
+    // console.log(btnNum);
   }
 
   // console.log(pages)
@@ -59,7 +70,9 @@ const AllJobs = () => {
         <div className="flex flex-col md:flex-row justify-center items-center gap-5 ">
           <div>
             <select
-            onChange={e=>setFilter(e.target.value)}
+            onChange={e=>{setFilter(e.target.value)
+              // setCurrentPage(1)
+            }}
             value={filter}
               name="category"
               id="category"
@@ -89,6 +102,7 @@ const AllJobs = () => {
           </form>
           <div>
             <select
+            onChange={e=>{setSort(e.target.value)}}
               name="category"
               id="category"
               className="border p-4 rounded-md"
@@ -98,7 +112,7 @@ const AllJobs = () => {
               <option value="asc">Ascending Order</option>
             </select>
           </div>
-          <button className="btn">Reset</button>
+          <button onClick={handleReset} className="btn">Reset</button>
         </div>
         <div className="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {jobs.map((job) => (
